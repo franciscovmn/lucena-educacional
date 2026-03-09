@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { useState } from 'react';
-import { turmas, getAlunosByTurma, gerarFrequencia } from '@/data/mockData';
+import { turmas, getAlunosByTurma, gerarFrequencia, Aluno, RegistroFrequencia } from '@/data/mockData';
 import { StatusBadge } from '@/components/StatusBadge';
 import { ArrowLeft } from 'lucide-react';
 
@@ -12,29 +12,28 @@ export default function FrequenciaTurma() {
 
   if (!turma) return <div>Turma não encontrada</div>;
 
-  const presentesEntrada: typeof alunosTurma = [];
-  const ausentesEntrada: typeof alunosTurma = [];
-  const presentesTurma: typeof alunosTurma = [];
-  const ausentesTurma: typeof alunosTurma = [];
-
-  alunosTurma.forEach(a => {
-    const freq = gerarFrequencia(a.id, a.frequenciaEntrada, a.frequenciaTurma);
+  const getFreqDia = (aluno: Aluno) => {
+    const freq = gerarFrequencia(aluno.id, aluno.frequenciaEntrada, aluno.frequenciaTurma);
     const diaE = freq.entrada.find(r => r.data === dataSel);
     const diaT = freq.turma.find(r => r.data === dataSel);
-    if (diaE?.status === 'presente') presentesEntrada.push(a);
-    else ausentesEntrada.push(a);
-    if (diaT?.status === 'presente') presentesTurma.push(a);
-    else ausentesTurma.push(a);
-  });
+    return { entrada: diaE, turma: diaT };
+  };
 
-  const renderLista = (presentes: typeof alunosTurma, ausentes: typeof alunosTurma, freqGetter: (a: typeof alunosTurma[0]) => any) => (
+  const dadosAlunos = alunosTurma.map(a => ({ aluno: a, ...getFreqDia(a) }));
+
+  const presentesEntrada = dadosAlunos.filter(d => d.entrada?.status === 'presente');
+  const ausentesEntrada = dadosAlunos.filter(d => d.entrada?.status !== 'presente');
+  const presentesTurma = dadosAlunos.filter(d => d.turma?.status === 'presente');
+  const ausentesTurma = dadosAlunos.filter(d => d.turma?.status !== 'presente');
+
+  const renderLista = (presentes: typeof dadosAlunos, ausentes: typeof dadosAlunos, tipo: 'entrada' | 'turma') => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
         <h4 className="text-sm font-semibold mb-2 badge-presente inline-block px-3 py-1 rounded-full">Presentes ({presentes.length})</h4>
         <div className="space-y-1 mt-2">
-          {presentes.map(a => (
-            <div key={a.id} className="bg-card border rounded p-2 text-sm flex justify-between items-center">
-              <span>{a.nome}</span>
+          {presentes.map(d => (
+            <div key={d.aluno.id} className="bg-card border rounded p-2 text-sm flex justify-between items-center">
+              <span>{d.aluno.nome}</span>
               <StatusBadge status="presente" />
             </div>
           ))}
@@ -43,16 +42,12 @@ export default function FrequenciaTurma() {
       <div>
         <h4 className="text-sm font-semibold mb-2 badge-ausente inline-block px-3 py-1 rounded-full">Ausentes ({ausentes.length})</h4>
         <div className="space-y-1 mt-2">
-          {ausentes.map(a => {
-            const freq = gerarFrequencia(a.id, a.frequenciaEntrada, a.frequenciaTurma);
-            const dia = freqGetter(freq);
-            return (
-              <div key={a.id} className="bg-card border rounded p-2 text-sm flex justify-between items-center">
-                <span>{a.nome}</span>
-                <StatusBadge status={dia?.status || 'ausente'} />
-              </div>
-            );
-          })}
+          {ausentes.map(d => (
+            <div key={d.aluno.id} className="bg-card border rounded p-2 text-sm flex justify-between items-center">
+              <span>{d.aluno.nome}</span>
+              <StatusBadge status={d[tipo]?.status || 'ausente'} />
+            </div>
+          ))}
         </div>
       </div>
     </div>
@@ -73,11 +68,11 @@ export default function FrequenciaTurma() {
       <div className="space-y-6">
         <div>
           <h3 className="text-lg font-semibold mb-3">Entrada na Escola (Portaria)</h3>
-          {renderLista(presentesEntrada, ausentesEntrada, (f) => f.entrada.find((r: any) => r.data === dataSel))}
+          {renderLista(presentesEntrada, ausentesEntrada, 'entrada')}
         </div>
         <div>
           <h3 className="text-lg font-semibold mb-3">Frequência por Turma/Aula</h3>
-          {renderLista(presentesTurma, ausentesTurma, (f) => f.turma.find((r: any) => r.data === dataSel))}
+          {renderLista(presentesTurma, ausentesTurma, 'turma')}
         </div>
       </div>
     </div>
