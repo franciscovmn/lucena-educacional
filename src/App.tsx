@@ -67,6 +67,7 @@ function AppRoutes() {
       {/* Responsável */}
       <Route path="/responsavel" element={<ProtectedLayout><PainelDependentes /></ProtectedLayout>} />
       <Route path="/responsavel/filho/:id" element={<ProtectedLayout><DetalheFilho /></ProtectedLayout>} />
+      <Route path="/responsavel/notificacoes" element={<ProtectedLayout><NotificacoesResponsavel /></ProtectedLayout>} />
       <Route path="/responsavel/justificativas" element={<ProtectedLayout><JustificativasResponsavel /></ProtectedLayout>} />
       <Route path="/responsavel/meus-dados" element={<ProtectedLayout><MeusDadosResponsavel /></ProtectedLayout>} />
 
