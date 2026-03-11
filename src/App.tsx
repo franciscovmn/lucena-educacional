@@ -89,6 +89,7 @@ function AppRoutes() {
       <Route path="/diretor/novo-aluno" element={<ProtectedLayout><NovoAluno /></ProtectedLayout>} />
       <Route path="/diretor/turmas" element={<ProtectedLayout><GestaoTurmas /></ProtectedLayout>} />
       <Route path="/diretor/professores" element={<ProtectedLayout><ProfessoresDiretor /></ProtectedLayout>} />
+      <Route path="/diretor/responsaveis" element={<ProtectedLayout><ResponsaveisDiretor /></ProtectedLayout>} />
       <Route path="/diretor/configuracoes" element={<ProtectedLayout><ConfiguracoesEscola /></ProtectedLayout>} />
       <Route path="/diretor/meus-dados" element={<ProtectedLayout><MeusDadosDiretor /></ProtectedLayout>} />
 
