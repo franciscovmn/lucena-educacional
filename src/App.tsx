@@ -14,6 +14,7 @@ import PainelDependentes from "./pages/responsavel/PainelDependentes";
 import DetalheFilho from "./pages/responsavel/DetalheFilho";
 import JustificativasResponsavel from "./pages/responsavel/JustificativasResponsavel";
 import MeusDadosResponsavel from "./pages/responsavel/MeusDadosResponsavel";
+import NotificacoesResponsavel from "./pages/responsavel/NotificacoesResponsavel";
 
 // Professor
 import PainelEscolasProfessor from "./pages/professor/PainelEscolasProfessor";
