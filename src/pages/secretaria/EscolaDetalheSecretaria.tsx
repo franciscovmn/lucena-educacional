@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
-import { escolas, getSeriesByEscola, getTurmasBySerie } from '@/data/mockData';
-import { ArrowLeft, BookOpen } from 'lucide-react';
+import { escolas, getSeriesByEscola } from '@/data/mockData';
+import { ArrowLeft } from 'lucide-react';
 
 export default function EscolaDetalheSecretaria() {
   const { escolaId } = useParams();

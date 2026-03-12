@@ -98,6 +98,7 @@ function AppRoutes() {
       {/* Secretaria */}
       <Route path="/secretaria" element={<ProtectedLayout><PainelEscolasSecretaria /></ProtectedLayout>} />
       <Route path="/secretaria/escola/:escolaId" element={<ProtectedLayout><EscolaDetalheSecretaria /></ProtectedLayout>} />
+      <Route path="/secretaria/escola/:escolaId/serie/:serieId" element={<ProtectedLayout><TurmasSerieSecretaria /></ProtectedLayout>} />
       <Route path="/secretaria/escola/:escolaId/turma/:turmaId" element={<ProtectedLayout><DetalheTurmaSecretaria /></ProtectedLayout>} />
       <Route path="/secretaria/diretores" element={<ProtectedLayout><GestaoDiretores /></ProtectedLayout>} />
       <Route path="/secretaria/professores" element={<ProtectedLayout><GestaoProfessoresSecretaria /></ProtectedLayout>} />
