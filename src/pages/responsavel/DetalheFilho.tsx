@@ -49,7 +49,7 @@ export default function DetalheFilho() {
       {activeTab === 'frequencia' && (
         <div className="space-y-4">
           <AttendanceCalendar registros={freq.entrada} titulo="Entrada na Escola (Portaria)" percentual={aluno.frequenciaEntrada} />
-          <AttendanceCalendar registros={freq.turma} titulo="Frequência por Turma/Aula" percentual={aluno.frequenciaTurma} />
+          {/* <AttendanceCalendar registros={freq.turma} titulo="Frequência por Turma/Aula" percentual={aluno.frequenciaTurma} /> */}
         </div>
       )}
 

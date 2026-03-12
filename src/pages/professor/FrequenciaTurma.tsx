@@ -70,10 +70,10 @@ export default function FrequenciaTurma() {
           <h3 className="text-lg font-semibold mb-3">Entrada na Escola (Portaria)</h3>
           {renderLista(presentesEntrada, ausentesEntrada, 'entrada')}
         </div>
-        <div>
+        {/* <div>
           <h3 className="text-lg font-semibold mb-3">Frequência por Turma/Aula</h3>
           {renderLista(presentesTurma, ausentesTurma, 'turma')}
-        </div>
+        </div> */}
       </div>
     </div>
   );

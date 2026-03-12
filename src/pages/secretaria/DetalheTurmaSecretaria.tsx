@@ -54,7 +54,7 @@ export default function DetalheTurmaSecretaria() {
         <input type="date" value={dataSel} onChange={e => setDataSel(e.target.value)} className="px-3 py-1.5 border rounded-md bg-background text-sm" />
       </div>
 
-      {['Entrada na Escola', 'Frequência por Turma'].map((titulo, idx) => {
+      {['Entrada na Escola'/*, 'Frequência por Turma'*/].map((titulo, idx) => {
         const key = idx === 0 ? 'entrada' : 'turma';
         const presentes = dadosAlunos.filter(d => d[key as 'entrada' | 'turma']?.status === 'presente');
         const ausentes = dadosAlunos.filter(d => d[key as 'entrada' | 'turma']?.status !== 'presente');
