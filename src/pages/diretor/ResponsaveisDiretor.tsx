@@ -7,8 +7,10 @@ export default function ResponsaveisDiretor() {
   const [filtroEscola, setFiltroEscola] = useState('');
   const [filtroSerie, setFiltroSerie] = useState('');
   const [filtroTurma, setFiltroTurma] = useState('');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [aviso, setAviso] = useState('');
+  const [responsavelSelecionado, setResponsavelSelecionado] = useState<string>('');
 
-  // Escolas do diretor
   const escolaIds = ['1', '2'];
   const escolasDiretor = escolas.filter(e => escolaIds.includes(e.id));
 
@@ -22,7 +24,6 @@ export default function ResponsaveisDiretor() {
 
     return responsaveisEscola.filter(r => {
       if (filtroNome && !r.nome.toLowerCase().includes(filtroNome.toLowerCase())) return false;
-
       if (filtroEscola) {
         const deps = getDependentes(r.id);
         let depsFiltered = deps.filter(d => d.escolaId === filtroEscola);
@@ -35,10 +36,16 @@ export default function ResponsaveisDiretor() {
         }
         if (depsFiltered.length === 0) return false;
       }
-
       return true;
     });
   }, [filtroNome, filtroEscola, filtroSerie, filtroTurma]);
+
+  const handleEnviar = () => {
+    toast.success('Aviso enviado ao responsável com sucesso!');
+    setModalOpen(false);
+    setAviso('');
+    setResponsavelSelecionado('');
+  };
 
   return (
     <div>
@@ -87,7 +94,7 @@ export default function ResponsaveisDiretor() {
                   <td className="p-3 text-sm">{r.whatsapp}</td>
                   <td className="p-3 text-sm">{deps.map(d => d.nome).join(', ')}</td>
                   <td className="p-3">
-                    <button onClick={() => toast.success('Notificação enviada!')} className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded">Notificar</button>
+                    <button onClick={() => { setResponsavelSelecionado(r.nome); setModalOpen(true); }} className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded">Notificar</button>
                   </td>
                 </tr>
               );
@@ -95,6 +102,21 @@ export default function ResponsaveisDiretor() {
           </tbody>
         </table>
       </div>
+
+      {modalOpen && (
+        <div className="fixed inset-0 bg-foreground/30 z-50 flex items-center justify-center p-4" onClick={() => setModalOpen(false)}>
+          <div className="bg-card rounded-lg border shadow-xl p-6 w-full max-w-md" onClick={e => e.stopPropagation()}>
+            <h3 className="font-semibold text-lg mb-4">Enviar Aviso ao Responsável</h3>
+            <p className="text-sm text-muted-foreground mb-3">Para: {responsavelSelecionado}</p>
+            <textarea value={aviso} onChange={e => setAviso(e.target.value)} placeholder="Digite o aviso..." rows={4}
+              className="w-full px-3 py-2 border rounded-md bg-background text-sm mb-4" />
+            <div className="flex gap-2 justify-end">
+              <button onClick={() => setModalOpen(false)} className="px-4 py-2 text-sm border rounded-md hover:bg-secondary">Cancelar</button>
+              <button onClick={handleEnviar} className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-md hover:opacity-90">Enviar</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
