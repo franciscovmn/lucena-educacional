@@ -41,7 +41,7 @@ export default function DetalheAlunoDiretor() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <AttendanceCalendar registros={freq.entrada} titulo="Entrada na Escola" percentual={aluno.frequenciaEntrada} />
-        <AttendanceCalendar registros={freq.turma} titulo="Frequência por Turma" percentual={aluno.frequenciaTurma} />
+        {/* <AttendanceCalendar registros={freq.turma} titulo="Frequência por Turma" percentual={aluno.frequenciaTurma} /> */}
       </div>
 
       <h2 className="text-lg font-semibold mb-3">Responsáveis Vinculados</h2>
