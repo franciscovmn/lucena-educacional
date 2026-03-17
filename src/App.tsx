@@ -23,6 +23,7 @@ import FrequenciaTurma from "./pages/professor/FrequenciaTurma";
 import ListaAlunos from "./pages/professor/ListaAlunos";
 import DetalheAlunoProfessor from "./pages/professor/DetalheAlunoProfessor";
 import MeusDadosProfessor from "./pages/professor/MeusDadosProfessor";
+import RelatoriosProfessor from "./pages/professor/RelatoriosProfessor";
 
 // Diretor
 import PainelEscolaDiretor from "./pages/diretor/PainelEscolaDiretor";
@@ -37,6 +38,7 @@ import ProfessoresDiretor from "./pages/diretor/ProfessoresDiretor";
 import ConfiguracoesEscola from "./pages/diretor/ConfiguracoesEscola";
 import MeusDadosDiretor from "./pages/diretor/MeusDadosDiretor";
 import ResponsaveisDiretor from "./pages/diretor/ResponsaveisDiretor";
+import RelatoriosDiretor from "./pages/diretor/RelatoriosDiretor";
 
 // Secretaria
 import PainelEscolasSecretaria from "./pages/secretaria/PainelEscolasSecretaria";
@@ -50,6 +52,7 @@ import JustificativasGlobais from "./pages/secretaria/JustificativasGlobais";
 import DetalheTurmaSecretaria from "./pages/secretaria/DetalheTurmaSecretaria";
 import TurmasSerieSecretaria from "./pages/secretaria/TurmasSerieSecretaria";
 import DetalheAlunoSecretaria from "./pages/secretaria/DetalheAlunoSecretaria";
+import RelatoriosSecretaria from "./pages/secretaria/RelatoriosSecretaria";
 
 const queryClient = new QueryClient();
 
@@ -81,6 +84,7 @@ function AppRoutes() {
       <Route path="/professor/alunos" element={<ProtectedLayout><ListaAlunos /></ProtectedLayout>} />
       <Route path="/professor/aluno/:id" element={<ProtectedLayout><DetalheAlunoProfessor /></ProtectedLayout>} />
       <Route path="/professor/meus-dados" element={<ProtectedLayout><MeusDadosProfessor /></ProtectedLayout>} />
+      <Route path="/professor/relatorios" element={<ProtectedLayout><RelatoriosProfessor /></ProtectedLayout>} />
 
       {/* Diretor */}
       <Route path="/diretor" element={<ProtectedLayout><PainelEscolaDiretor /></ProtectedLayout>} />
@@ -96,6 +100,7 @@ function AppRoutes() {
       <Route path="/diretor/responsaveis" element={<ProtectedLayout><ResponsaveisDiretor /></ProtectedLayout>} />
       <Route path="/diretor/configuracoes" element={<ProtectedLayout><ConfiguracoesEscola /></ProtectedLayout>} />
       <Route path="/diretor/meus-dados" element={<ProtectedLayout><MeusDadosDiretor /></ProtectedLayout>} />
+      <Route path="/diretor/relatorios" element={<ProtectedLayout><RelatoriosDiretor /></ProtectedLayout>} />
 
       {/* Secretaria */}
       <Route path="/secretaria" element={<ProtectedLayout><PainelEscolasSecretaria /></ProtectedLayout>} />
@@ -109,6 +114,7 @@ function AppRoutes() {
       <Route path="/secretaria/novo-aluno" element={<ProtectedLayout><NovoAlunoSecretaria /></ProtectedLayout>} />
       <Route path="/secretaria/justificativas" element={<ProtectedLayout><JustificativasGlobais /></ProtectedLayout>} />
       <Route path="/secretaria/aluno/:id" element={<ProtectedLayout><DetalheAlunoSecretaria /></ProtectedLayout>} />
+      <Route path="/secretaria/relatorios" element={<ProtectedLayout><RelatoriosSecretaria /></ProtectedLayout>} />
 
       <Route path="*" element={<NotFound />} />
     </Routes>

@@ -4,7 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { notificacoes, nomesPerfil, PerfilUsuario } from '@/data/mockData';
 import {
   Home, Users, FileText, Settings, BookOpen, GraduationCap,
-  School, UserCheck, Bell, LogOut, Menu, X, ChevronDown, User
+  School, UserCheck, Bell, LogOut, Menu, X, ChevronDown, User, BarChart3
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -24,6 +24,7 @@ const menusPorPerfil: Record<PerfilUsuario, MenuItem[]> = {
   professor: [
     { label: 'Escolas', path: '/professor', icon: <School className="w-5 h-5" /> },
     { label: 'Alunos', path: '/professor/alunos', icon: <Users className="w-5 h-5" /> },
+    { label: 'Relatórios', path: '/professor/relatorios', icon: <BarChart3 className="w-5 h-5" /> },
     { label: 'Meus Dados', path: '/professor/meus-dados', icon: <User className="w-5 h-5" /> },
   ],
   diretor: [
@@ -33,6 +34,7 @@ const menusPorPerfil: Record<PerfilUsuario, MenuItem[]> = {
     { label: 'Responsáveis', path: '/diretor/responsaveis', icon: <UserCheck className="w-5 h-5" /> },
     { label: 'Turmas', path: '/diretor/turmas', icon: <BookOpen className="w-5 h-5" /> },
     { label: 'Professores', path: '/diretor/professores', icon: <GraduationCap className="w-5 h-5" /> },
+    { label: 'Relatórios', path: '/diretor/relatorios', icon: <BarChart3 className="w-5 h-5" /> },
     { label: 'Configurações', path: '/diretor/configuracoes', icon: <Settings className="w-5 h-5" /> },
     { label: 'Meus Dados', path: '/diretor/meus-dados', icon: <User className="w-5 h-5" /> },
   ],
@@ -43,6 +45,7 @@ const menusPorPerfil: Record<PerfilUsuario, MenuItem[]> = {
     { label: 'Responsáveis', path: '/secretaria/responsaveis', icon: <Users className="w-5 h-5" /> },
     { label: 'Alunos', path: '/secretaria/alunos', icon: <Users className="w-5 h-5" /> },
     { label: 'Justificativas', path: '/secretaria/justificativas', icon: <FileText className="w-5 h-5" /> },
+    { label: 'Relatórios', path: '/secretaria/relatorios', icon: <BarChart3 className="w-5 h-5" /> },
   ],
 };
 
