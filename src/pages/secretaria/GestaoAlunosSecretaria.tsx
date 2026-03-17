@@ -9,6 +9,7 @@ const cadastrosPendentes = [
 ];
 
 export default function GestaoAlunosSecretaria() {
+  const navigate = useNavigate();
   const [filtroNome, setFiltroNome] = useState('');
   const [filtroEscola, setFiltroEscola] = useState('');
   const [filtroSerie, setFiltroSerie] = useState('');
