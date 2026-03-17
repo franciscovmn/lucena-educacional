@@ -26,13 +26,31 @@ export default function EscolaDetalheSecretaria() {
 
   // Modal Nova Turma
   const [turmaModalOpen, setTurmaModalOpen] = useState(false);
-  const [novaTurmaNome, setNovaTurmaNome] = useState('');
   const [novaTurmaSerie, setNovaTurmaSerie] = useState('');
   const [novaTurmaSala, setNovaTurmaSala] = useState('');
   const [turmaSobrescrever, setTurmaSobrescrever] = useState(false);
   const [turmaHorarioInicio, setTurmaHorarioInicio] = useState('07:00');
   const [turmaTolerancia, setTurmaTolerancia] = useState('15');
   const [turmaLimiteMax, setTurmaLimiteMax] = useState('07:30');
+
+  // Auto-generate turma name
+  const proximaLetraTurma = useMemo(() => {
+    if (!novaTurmaSerie) return '';
+    const turmasSerie = turmas.filter(t => t.serieId === novaTurmaSerie);
+    const letras = turmasSerie.map(t => {
+      const match = t.nome.match(/\s([A-Z])$/);
+      return match ? match[1] : '';
+    }).filter(Boolean).sort();
+    if (letras.length === 0) return 'A';
+    const ultimaLetra = letras[letras.length - 1];
+    return String.fromCharCode(ultimaLetra.charCodeAt(0) + 1);
+  }, [novaTurmaSerie]);
+
+  const nomeTurmaGerado = useMemo(() => {
+    if (!novaTurmaSerie) return '';
+    const serie = series.find(s => s.id === novaTurmaSerie);
+    return serie ? `${serie.nome} ${proximaLetraTurma}` : '';
+  }, [novaTurmaSerie, proximaLetraTurma]);
 
   if (!escola) return <div>Escola não encontrada</div>;
 
