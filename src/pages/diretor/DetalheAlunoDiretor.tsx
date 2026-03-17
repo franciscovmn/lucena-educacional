@@ -8,8 +8,6 @@ import { toast } from 'sonner';
 export default function DetalheAlunoDiretor() {
   const { id } = useParams();
   const aluno = alunos.find(a => a.id === id);
-  const [editando, setEditando] = useState(false);
-  const [nome, setNome] = useState(aluno?.nome || '');
   const [modalAviso, setModalAviso] = useState(false);
   const [aviso, setAviso] = useState('');
 
