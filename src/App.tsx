@@ -23,6 +23,7 @@ import FrequenciaTurma from "./pages/professor/FrequenciaTurma";
 import ListaAlunos from "./pages/professor/ListaAlunos";
 import DetalheAlunoProfessor from "./pages/professor/DetalheAlunoProfessor";
 import MeusDadosProfessor from "./pages/professor/MeusDadosProfessor";
+import RelatoriosProfessor from "./pages/professor/RelatoriosProfessor";
 
 // Diretor
 import PainelEscolaDiretor from "./pages/diretor/PainelEscolaDiretor";
