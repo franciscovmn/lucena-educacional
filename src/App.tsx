@@ -100,6 +100,7 @@ function AppRoutes() {
       <Route path="/diretor/responsaveis" element={<ProtectedLayout><ResponsaveisDiretor /></ProtectedLayout>} />
       <Route path="/diretor/configuracoes" element={<ProtectedLayout><ConfiguracoesEscola /></ProtectedLayout>} />
       <Route path="/diretor/meus-dados" element={<ProtectedLayout><MeusDadosDiretor /></ProtectedLayout>} />
+      <Route path="/diretor/relatorios" element={<ProtectedLayout><RelatoriosDiretor /></ProtectedLayout>} />
 
       {/* Secretaria */}
       <Route path="/secretaria" element={<ProtectedLayout><PainelEscolasSecretaria /></ProtectedLayout>} />
