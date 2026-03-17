@@ -38,6 +38,7 @@ import ProfessoresDiretor from "./pages/diretor/ProfessoresDiretor";
 import ConfiguracoesEscola from "./pages/diretor/ConfiguracoesEscola";
 import MeusDadosDiretor from "./pages/diretor/MeusDadosDiretor";
 import ResponsaveisDiretor from "./pages/diretor/ResponsaveisDiretor";
+import RelatoriosDiretor from "./pages/diretor/RelatoriosDiretor";
 
 // Secretaria
 import PainelEscolasSecretaria from "./pages/secretaria/PainelEscolasSecretaria";
