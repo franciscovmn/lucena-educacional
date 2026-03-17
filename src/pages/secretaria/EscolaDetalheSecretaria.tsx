@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { escolas, getSeriesByEscola, getTurmasBySerie, series, turmas, alunos, Turma } from '@/data/mockData';
-import { ArrowLeft, Plus, Clock, GraduationCap, Pencil, Trash2 } from 'lucide-react';
+import { escolas, getSeriesByEscola, getTurmasBySerie, series, turmas, alunos, professores, Turma } from '@/data/mockData';
+import { ArrowLeft, Plus, Clock, GraduationCap, Pencil, Trash2, Search, UserPlus, UserMinus } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -56,6 +56,24 @@ export default function EscolaDetalheSecretaria() {
   const [editTurmaModalOpen, setEditTurmaModalOpen] = useState(false);
   const [editTurmaId, setEditTurmaId] = useState<string | null>(null);
   const [editTurmaSala, setEditTurmaSala] = useState('');
+  const [editProfsSel, setEditProfsSel] = useState<string[]>([]);
+  const [editAlunosBusca, setEditAlunosBusca] = useState('');
+
+  const profsEscola = useMemo(() => professores.filter(p => p.escolaIds.includes(escolaId || '')), [escolaId]);
+  const alunosEscola = useMemo(() => alunos.filter(a => a.escolaId === escolaId), [escolaId]);
+
+  const alunosDaTurmaEdit = useMemo(() => {
+    if (!editTurmaId) return [];
+    return alunos.filter(a => a.turmaId === editTurmaId);
+  }, [editTurmaId]);
+
+  const alunosDisponiveisEdit = useMemo(() => {
+    if (!editTurmaId) return [];
+    return alunosEscola.filter(a =>
+      a.turmaId !== editTurmaId &&
+      (editAlunosBusca === '' || a.nome.toLowerCase().includes(editAlunosBusca.toLowerCase()) || a.matricula.includes(editAlunosBusca))
+    );
+  }, [editTurmaId, alunosEscola, editAlunosBusca]);
 
   // Delete turma
   const [deleteTurmaId, setDeleteTurmaId] = useState<string | null>(null);
@@ -99,16 +117,33 @@ export default function EscolaDetalheSecretaria() {
   const openEditTurma = (turma: Turma) => {
     setEditTurmaId(turma.id);
     setEditTurmaSala(turma.sala.replace(/\D/g, '') || turma.sala);
+    setEditProfsSel([...turma.professorIds]);
+    setEditAlunosBusca('');
     setEditTurmaModalOpen(true);
+  };
+
+  const toggleEditProf = (id: string) => {
+    setEditProfsSel(prev => prev.includes(id) ? prev.filter(p => p !== id) : [...prev, id]);
   };
 
   const handleSalvarEditTurma = () => {
     setTurmasLocais(prev => prev.map(t =>
-      t.id === editTurmaId ? { ...t, sala: `Sala ${editTurmaSala}` } : t
+      t.id === editTurmaId ? { ...t, sala: `Sala ${editTurmaSala}`, professorIds: editProfsSel } : t
     ));
     toast.success('Turma atualizada com sucesso!');
     setEditTurmaModalOpen(false);
     setEditTurmaId(null);
+  };
+
+  const handleRemoverAlunoTurma = (alunoId: string) => {
+    const al = alunos.find(a => a.id === alunoId);
+    toast.success(`Aluno "${al?.nome}" removido da turma.`);
+  };
+
+  const handleAdicionarAlunoTurma = (alunoId: string) => {
+    const al = alunos.find(a => a.id === alunoId);
+    toast.success(`Aluno "${al?.nome}" adicionado à turma.`);
+    setEditAlunosBusca('');
   };
 
   const alunosNaTurmaDelete = deleteTurmaId ? alunos.filter(a => a.turmaId === deleteTurmaId).length : 0;
@@ -362,19 +397,97 @@ export default function EscolaDetalheSecretaria() {
       </Dialog>
       {/* ===== MODAL EDITAR TURMA ===== */}
       <Dialog open={editTurmaModalOpen} onOpenChange={setEditTurmaModalOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Editar Turma</DialogTitle>
             <DialogDescription>{editingTurma ? `Editando: ${editingTurma.nome}` : ''}</DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 py-2">
-            <div>
-              <Label>Nome da Turma</Label>
-              <Input value={editingTurma?.nome || ''} readOnly className="mt-1 bg-muted" />
+          <div className="space-y-6 py-2">
+            {/* Dados básicos */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Nome da Turma</Label>
+                <Input value={editingTurma?.nome || ''} readOnly className="mt-1 bg-muted" />
+              </div>
+              <div>
+                <Label>Sala (número)</Label>
+                <Input type="number" value={editTurmaSala} onChange={e => setEditTurmaSala(e.target.value)} min={1} className="mt-1" />
+              </div>
             </div>
+
+            {/* Professores */}
             <div>
-              <Label>Sala (número)</Label>
-              <Input type="number" value={editTurmaSala} onChange={e => setEditTurmaSala(e.target.value)} min={1} className="mt-1" />
+              <Label className="text-base font-semibold">Professores Vinculados</Label>
+              <div className="space-y-2 border rounded-md p-3 bg-background max-h-40 overflow-y-auto mt-2">
+                {profsEscola.map(p => (
+                  <label key={p.id} className="flex items-center gap-2 text-sm cursor-pointer">
+                    <input type="checkbox" checked={editProfsSel.includes(p.id)} onChange={() => toggleEditProf(p.id)} className="rounded border-input" />
+                    <span>{p.nome}</span>
+                    <span className="text-xs text-muted-foreground">({p.disciplinas.join(', ')})</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Alunos da turma */}
+            <div>
+              <Label className="text-base font-semibold">Alunos da Turma ({alunosDaTurmaEdit.length})</Label>
+              <div className="border rounded-md mt-2 max-h-48 overflow-y-auto">
+                {alunosDaTurmaEdit.length === 0 ? (
+                  <p className="p-3 text-sm text-muted-foreground text-center">Nenhum aluno nesta turma.</p>
+                ) : (
+                  alunosDaTurmaEdit.map(a => (
+                    <div key={a.id} className="flex items-center justify-between p-2 border-b last:border-b-0">
+                      <div>
+                        <span className="text-sm font-medium">{a.nome}</span>
+                        <span className="text-xs text-muted-foreground ml-2">Mat: {a.matricula}</span>
+                      </div>
+                      <button
+                        onClick={() => handleRemoverAlunoTurma(a.id)}
+                        className="text-xs bg-destructive text-destructive-foreground px-2 py-1 rounded inline-flex items-center gap-1 hover:opacity-80"
+                      >
+                        <UserMinus className="w-3 h-3" /> Remover
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* Adicionar aluno */}
+            <div>
+              <Label className="text-base font-semibold">Adicionar Aluno à Turma</Label>
+              <div className="relative mt-2">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  placeholder="Buscar aluno por nome ou matrícula..."
+                  value={editAlunosBusca}
+                  onChange={e => setEditAlunosBusca(e.target.value)}
+                  className="pl-9"
+                />
+              </div>
+              {editAlunosBusca && (
+                <div className="border rounded-md mt-1 max-h-36 overflow-y-auto">
+                  {alunosDisponiveisEdit.length === 0 ? (
+                    <p className="p-3 text-sm text-muted-foreground text-center">Nenhum aluno encontrado.</p>
+                  ) : (
+                    alunosDisponiveisEdit.slice(0, 10).map(a => (
+                      <div key={a.id} className="flex items-center justify-between p-2 border-b last:border-b-0 hover:bg-secondary/50">
+                        <div>
+                          <span className="text-sm font-medium">{a.nome}</span>
+                          <span className="text-xs text-muted-foreground ml-2">{a.turmaName} — Mat: {a.matricula}</span>
+                        </div>
+                        <button
+                          onClick={() => handleAdicionarAlunoTurma(a.id)}
+                          className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded inline-flex items-center gap-1 hover:opacity-80"
+                        >
+                          <UserPlus className="w-3 h-3" /> Adicionar
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
             </div>
           </div>
           <DialogFooter>

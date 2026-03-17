@@ -49,6 +49,7 @@ import NovoAlunoSecretaria from "./pages/secretaria/NovoAlunoSecretaria";
 import JustificativasGlobais from "./pages/secretaria/JustificativasGlobais";
 import DetalheTurmaSecretaria from "./pages/secretaria/DetalheTurmaSecretaria";
 import TurmasSerieSecretaria from "./pages/secretaria/TurmasSerieSecretaria";
+import DetalheAlunoSecretaria from "./pages/secretaria/DetalheAlunoSecretaria";
 
 const queryClient = new QueryClient();
 
@@ -107,6 +108,7 @@ function AppRoutes() {
       <Route path="/secretaria/alunos" element={<ProtectedLayout><GestaoAlunosSecretaria /></ProtectedLayout>} />
       <Route path="/secretaria/novo-aluno" element={<ProtectedLayout><NovoAlunoSecretaria /></ProtectedLayout>} />
       <Route path="/secretaria/justificativas" element={<ProtectedLayout><JustificativasGlobais /></ProtectedLayout>} />
+      <Route path="/secretaria/aluno/:id" element={<ProtectedLayout><DetalheAlunoSecretaria /></ProtectedLayout>} />
 
       <Route path="*" element={<NotFound />} />
     </Routes>
