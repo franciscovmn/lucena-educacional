@@ -114,6 +114,7 @@ function AppRoutes() {
       <Route path="/secretaria/novo-aluno" element={<ProtectedLayout><NovoAlunoSecretaria /></ProtectedLayout>} />
       <Route path="/secretaria/justificativas" element={<ProtectedLayout><JustificativasGlobais /></ProtectedLayout>} />
       <Route path="/secretaria/aluno/:id" element={<ProtectedLayout><DetalheAlunoSecretaria /></ProtectedLayout>} />
+      <Route path="/secretaria/relatorios" element={<ProtectedLayout><RelatoriosSecretaria /></ProtectedLayout>} />
 
       <Route path="*" element={<NotFound />} />
     </Routes>
