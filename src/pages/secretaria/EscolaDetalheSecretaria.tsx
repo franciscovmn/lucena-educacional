@@ -117,16 +117,33 @@ export default function EscolaDetalheSecretaria() {
   const openEditTurma = (turma: Turma) => {
     setEditTurmaId(turma.id);
     setEditTurmaSala(turma.sala.replace(/\D/g, '') || turma.sala);
+    setEditProfsSel([...turma.professorIds]);
+    setEditAlunosBusca('');
     setEditTurmaModalOpen(true);
+  };
+
+  const toggleEditProf = (id: string) => {
+    setEditProfsSel(prev => prev.includes(id) ? prev.filter(p => p !== id) : [...prev, id]);
   };
 
   const handleSalvarEditTurma = () => {
     setTurmasLocais(prev => prev.map(t =>
-      t.id === editTurmaId ? { ...t, sala: `Sala ${editTurmaSala}` } : t
+      t.id === editTurmaId ? { ...t, sala: `Sala ${editTurmaSala}`, professorIds: editProfsSel } : t
     ));
     toast.success('Turma atualizada com sucesso!');
     setEditTurmaModalOpen(false);
     setEditTurmaId(null);
+  };
+
+  const handleRemoverAlunoTurma = (alunoId: string) => {
+    const al = alunos.find(a => a.id === alunoId);
+    toast.success(`Aluno "${al?.nome}" removido da turma.`);
+  };
+
+  const handleAdicionarAlunoTurma = (alunoId: string) => {
+    const al = alunos.find(a => a.id === alunoId);
+    toast.success(`Aluno "${al?.nome}" adicionado à turma.`);
+    setEditAlunosBusca('');
   };
 
   const alunosNaTurmaDelete = deleteTurmaId ? alunos.filter(a => a.turmaId === deleteTurmaId).length : 0;
