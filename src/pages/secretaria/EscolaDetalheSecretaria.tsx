@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { escolas, getSeriesByEscola, getTurmasBySerie, series, turmas } from '@/data/mockData';
-import { ArrowLeft, Plus, Clock, GraduationCap } from 'lucide-react';
+import { escolas, getSeriesByEscola, getTurmasBySerie, series, turmas, Turma } from '@/data/mockData';
+import { ArrowLeft, Plus, Clock, GraduationCap, Pencil, Trash2 } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { toast } from 'sonner';
+import { ConfirmModal } from '@/components/ConfirmModal';
 
 export default function EscolaDetalheSecretaria() {
   const { escolaId } = useParams();
@@ -51,6 +52,19 @@ export default function EscolaDetalheSecretaria() {
     const serie = series.find(s => s.id === novaTurmaSerie);
     return serie ? `${serie.nome} ${proximaLetraTurma}` : '';
   }, [novaTurmaSerie, proximaLetraTurma]);
+  // Edit turma
+  const [editTurmaModalOpen, setEditTurmaModalOpen] = useState(false);
+  const [editTurmaId, setEditTurmaId] = useState<string | null>(null);
+  const [editTurmaSala, setEditTurmaSala] = useState('');
+
+  // Delete turma
+  const [deleteTurmaId, setDeleteTurmaId] = useState<string | null>(null);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+
+  // Local turma list for mutations
+  const [turmasLocais, setTurmasLocais] = useState<Turma[]>(() => turmas.filter(t => t.escolaId === escolaId));
+
+  const getTurmasLocalBySerie = (serieId: string) => turmasLocais.filter(t => t.serieId === serieId);
 
   if (!escola) return <div>Escola não encontrada</div>;
 
@@ -65,12 +79,48 @@ export default function EscolaDetalheSecretaria() {
   };
 
   const handleSalvarTurma = () => {
+    const nova: Turma = {
+      id: `t-novo-${Date.now()}`,
+      nome: nomeTurmaGerado,
+      serieId: novaTurmaSerie,
+      escolaId: escolaId || '1',
+      sala: `Sala ${novaTurmaSala}`,
+      professorIds: [],
+      frequenciaMedia: 0,
+    };
+    setTurmasLocais(prev => [...prev, nova]);
     toast.success(`Turma "${nomeTurmaGerado}" criada com sucesso!`);
     setTurmaModalOpen(false);
     setNovaTurmaSerie('');
     setNovaTurmaSala('');
     setTurmaSobrescrever(false);
   };
+
+  const openEditTurma = (turma: Turma) => {
+    setEditTurmaId(turma.id);
+    setEditTurmaSala(turma.sala.replace(/\D/g, '') || turma.sala);
+    setEditTurmaModalOpen(true);
+  };
+
+  const handleSalvarEditTurma = () => {
+    setTurmasLocais(prev => prev.map(t =>
+      t.id === editTurmaId ? { ...t, sala: `Sala ${editTurmaSala}` } : t
+    ));
+    toast.success('Turma atualizada com sucesso!');
+    setEditTurmaModalOpen(false);
+    setEditTurmaId(null);
+  };
+
+  const handleDeleteTurma = () => {
+    if (!deleteTurmaId) return;
+    const turma = turmasLocais.find(t => t.id === deleteTurmaId);
+    setTurmasLocais(prev => prev.filter(t => t.id !== deleteTurmaId));
+    toast.success(`Turma "${turma?.nome}" excluída.`);
+    setDeleteConfirmOpen(false);
+    setDeleteTurmaId(null);
+  };
+
+  const editingTurma = turmasLocais.find(t => t.id === editTurmaId);
 
   // Regras padrão da série selecionada (simulação)
   const regrasHerdadas = { horario: '07:00', tolerancia: '15', limite: '07:30' };
@@ -121,7 +171,7 @@ export default function EscolaDetalheSecretaria() {
 
           <div className="space-y-6">
             {seriesEscola.map(serie => {
-              const turmasDaSerie = getTurmasBySerie(serie.id);
+              const turmasDaSerie = getTurmasLocalBySerie(serie.id);
               return (
                 <Card key={serie.id}>
                   <CardContent className="pt-5">
@@ -136,8 +186,20 @@ export default function EscolaDetalheSecretaria() {
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         {turmasDaSerie.map(turma => (
                           <div key={turma.id} className="border rounded-md p-3 bg-muted/30">
-                            <p className="font-medium text-sm text-card-foreground">{turma.nome}</p>
-                            <p className="text-xs text-muted-foreground">{turma.sala}</p>
+                            <div className="flex items-start justify-between">
+                              <div>
+                                <p className="font-medium text-sm text-card-foreground">{turma.nome}</p>
+                                <p className="text-xs text-muted-foreground">{turma.sala}</p>
+                              </div>
+                              <div className="flex gap-1">
+                                <button onClick={() => openEditTurma(turma)} className="text-muted-foreground hover:text-primary transition-colors">
+                                  <Pencil className="w-3.5 h-3.5" />
+                                </button>
+                                <button onClick={() => { setDeleteTurmaId(turma.id); setDeleteConfirmOpen(true); }} className="text-muted-foreground hover:text-destructive transition-colors">
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            </div>
                             <p className={`text-sm font-bold mt-1 ${turma.frequenciaMedia < 75 ? 'text-destructive' : 'text-primary'}`}>
                               {turma.frequenciaMedia}%
                             </p>
@@ -290,6 +352,40 @@ export default function EscolaDetalheSecretaria() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      {/* ===== MODAL EDITAR TURMA ===== */}
+      <Dialog open={editTurmaModalOpen} onOpenChange={setEditTurmaModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Editar Turma</DialogTitle>
+            <DialogDescription>{editingTurma ? `Editando: ${editingTurma.nome}` : ''}</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div>
+              <Label>Nome da Turma</Label>
+              <Input value={editingTurma?.nome || ''} readOnly className="mt-1 bg-muted" />
+            </div>
+            <div>
+              <Label>Sala (número)</Label>
+              <Input type="number" value={editTurmaSala} onChange={e => setEditTurmaSala(e.target.value)} min={1} className="mt-1" />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditTurmaModalOpen(false)}>Cancelar</Button>
+            <Button onClick={handleSalvarEditTurma}>Salvar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ===== CONFIRMAR EXCLUSÃO TURMA ===== */}
+      <ConfirmModal
+        open={deleteConfirmOpen}
+        onOpenChange={setDeleteConfirmOpen}
+        title="Excluir Turma"
+        description={`Tem certeza que deseja excluir a turma "${turmasLocais.find(t => t.id === deleteTurmaId)?.nome}"? Esta ação não pode ser desfeita.`}
+        onConfirm={handleDeleteTurma}
+        confirmLabel="Excluir"
+        variant="destructive"
+      />
     </div>
   );
 }
