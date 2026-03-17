@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { alunos, escolas, series, turmas } from '@/data/mockData';
 import { toast } from 'sonner';
 
