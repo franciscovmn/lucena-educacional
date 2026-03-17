@@ -259,6 +259,12 @@ export default function NovoAlunoSecretaria() {
           </CardContent>
         </Card>
       </form>
+
+      <CadastroResponsavelModal
+        open={modalNovoResp}
+        onOpenChange={setModalNovoResp}
+        onCadastrado={handleNovoRespCadastrado}
+      />
     </div>
   );
 }

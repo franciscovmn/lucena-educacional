@@ -276,6 +276,12 @@ export default function NovoAluno() {
           </CardContent>
         </Card>
       </form>
+
+      <CadastroResponsavelModal
+        open={modalNovoResp}
+        onOpenChange={setModalNovoResp}
+        onCadastrado={handleNovoRespCadastrado}
+      />
     </div>
   );
 }
