@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { escolas, getSeriesByEscola, getTurmasBySerie } from '@/data/mockData';
+import { escolas, getSeriesByEscola, getTurmasBySerie, series, turmas } from '@/data/mockData';
 import { ArrowLeft, Plus, Clock, GraduationCap } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
