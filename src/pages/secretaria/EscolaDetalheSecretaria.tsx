@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { escolas, getSeriesByEscola, getTurmasBySerie, series, turmas, Turma } from '@/data/mockData';
+import { escolas, getSeriesByEscola, getTurmasBySerie, series, turmas, alunos, Turma } from '@/data/mockData';
 import { ArrowLeft, Plus, Clock, GraduationCap, Pencil, Trash2 } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
@@ -111,8 +111,16 @@ export default function EscolaDetalheSecretaria() {
     setEditTurmaId(null);
   };
 
+  const alunosNaTurmaDelete = deleteTurmaId ? alunos.filter(a => a.turmaId === deleteTurmaId).length : 0;
+
   const handleDeleteTurma = () => {
     if (!deleteTurmaId) return;
+    if (alunosNaTurmaDelete > 0) {
+      toast.error(`Não é possível excluir: esta turma possui ${alunosNaTurmaDelete} aluno(s) vinculado(s).`);
+      setDeleteConfirmOpen(false);
+      setDeleteTurmaId(null);
+      return;
+    }
     const turma = turmasLocais.find(t => t.id === deleteTurmaId);
     setTurmasLocais(prev => prev.filter(t => t.id !== deleteTurmaId));
     toast.success(`Turma "${turma?.nome}" excluída.`);
@@ -381,7 +389,9 @@ export default function EscolaDetalheSecretaria() {
         open={deleteConfirmOpen}
         onOpenChange={setDeleteConfirmOpen}
         title="Excluir Turma"
-        description={`Tem certeza que deseja excluir a turma "${turmasLocais.find(t => t.id === deleteTurmaId)?.nome}"? Esta ação não pode ser desfeita.`}
+        description={alunosNaTurmaDelete > 0
+          ? `A turma "${turmasLocais.find(t => t.id === deleteTurmaId)?.nome}" possui ${alunosNaTurmaDelete} aluno(s) vinculado(s). Remova os alunos antes de excluir.`
+          : `Tem certeza que deseja excluir a turma "${turmasLocais.find(t => t.id === deleteTurmaId)?.nome}"? Esta ação não pode ser desfeita.`}
         onConfirm={handleDeleteTurma}
         confirmLabel="Excluir"
         variant="destructive"
