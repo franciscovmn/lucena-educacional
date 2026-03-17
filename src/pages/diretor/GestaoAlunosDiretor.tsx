@@ -45,9 +45,8 @@ export default function GestaoAlunosDiretor() {
           </tr></thead>
           <tbody>
             {filtered.map(a => (
-              <tr key={a.id} className="border-b">
-                <td className="p-3 text-sm">
-                  <Link to={`/diretor/aluno/${a.id}`} className="text-primary font-medium hover:underline">{a.nome}</Link>
+              <tr key={a.id} className="border-b hover:bg-secondary/30 cursor-pointer transition-colors" onClick={() => navigate(`/diretor/aluno/${a.id}`)}>
+                <td className="p-3 text-sm font-medium text-primary hover:underline">{a.nome}
                 </td>
                 <td className="p-3 text-sm">{a.cpf}</td>
                 <td className="p-3 text-sm">{a.matricula}</td>
