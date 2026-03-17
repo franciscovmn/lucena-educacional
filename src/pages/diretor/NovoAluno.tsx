@@ -22,12 +22,31 @@ export default function NovoAluno() {
   // Responsáveis vinculados
   const [buscaResp, setBuscaResp] = useState('');
   const [responsaveisVinculados, setResponsaveisVinculados] = useState<string[]>([]);
+
   // Aba Biometria
   const [bioCapturando, setBioCapturando] = useState(false);
   const [bioRegistrada, setBioRegistrada] = useState(false);
 
   const seriesEscola = series.filter(s => s.escolaId === '1');
   const turmasFiltradas = turmas.filter(t => t.serieId === serieSel);
+
+  const resultadosBusca = useMemo(() => {
+    if (!buscaResp.trim()) return [];
+    const termo = buscaResp.toLowerCase();
+    return responsaveis.filter(r =>
+      !responsaveisVinculados.includes(r.id) &&
+      (r.nome.toLowerCase().includes(termo) || r.cpf.includes(termo))
+    );
+  }, [buscaResp, responsaveisVinculados]);
+
+  const vincularResponsavel = (id: string) => {
+    setResponsaveisVinculados(prev => [...prev, id]);
+    setBuscaResp('');
+  };
+
+  const desvincularResponsavel = (id: string) => {
+    setResponsaveisVinculados(prev => prev.filter(r => r !== id));
+  };
 
   const handleCapturarBiometria = () => {
     setBioCapturando(true);
