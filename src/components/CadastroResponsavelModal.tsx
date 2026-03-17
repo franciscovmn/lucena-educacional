@@ -29,7 +29,6 @@ export default function CadastroResponsavelModal({ open, onOpenChange, onCadastr
       toast.error('CPF inválido. Verifique os dígitos.');
       return;
     }
-    }
     const novoId = `novo-${Date.now()}`;
     onCadastrado({ id: novoId, nome, cpf, whatsapp, parentesco });
     toast.success(`Responsável "${nome}" cadastrado e vinculado!`);
