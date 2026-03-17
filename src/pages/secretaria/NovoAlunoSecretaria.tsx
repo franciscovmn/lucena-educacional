@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ArrowLeft, UserPlus, Fingerprint, CheckCircle2, Loader2, Search, X, Plus } from 'lucide-react';
+import CadastroResponsavelModal from '@/components/CadastroResponsavelModal';
 
 export default function NovoAlunoSecretaria() {
   const navigate = useNavigate();
