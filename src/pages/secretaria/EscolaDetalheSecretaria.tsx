@@ -397,19 +397,97 @@ export default function EscolaDetalheSecretaria() {
       </Dialog>
       {/* ===== MODAL EDITAR TURMA ===== */}
       <Dialog open={editTurmaModalOpen} onOpenChange={setEditTurmaModalOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Editar Turma</DialogTitle>
             <DialogDescription>{editingTurma ? `Editando: ${editingTurma.nome}` : ''}</DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 py-2">
-            <div>
-              <Label>Nome da Turma</Label>
-              <Input value={editingTurma?.nome || ''} readOnly className="mt-1 bg-muted" />
+          <div className="space-y-6 py-2">
+            {/* Dados básicos */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Nome da Turma</Label>
+                <Input value={editingTurma?.nome || ''} readOnly className="mt-1 bg-muted" />
+              </div>
+              <div>
+                <Label>Sala (número)</Label>
+                <Input type="number" value={editTurmaSala} onChange={e => setEditTurmaSala(e.target.value)} min={1} className="mt-1" />
+              </div>
             </div>
+
+            {/* Professores */}
             <div>
-              <Label>Sala (número)</Label>
-              <Input type="number" value={editTurmaSala} onChange={e => setEditTurmaSala(e.target.value)} min={1} className="mt-1" />
+              <Label className="text-base font-semibold">Professores Vinculados</Label>
+              <div className="space-y-2 border rounded-md p-3 bg-background max-h-40 overflow-y-auto mt-2">
+                {profsEscola.map(p => (
+                  <label key={p.id} className="flex items-center gap-2 text-sm cursor-pointer">
+                    <input type="checkbox" checked={editProfsSel.includes(p.id)} onChange={() => toggleEditProf(p.id)} className="rounded border-input" />
+                    <span>{p.nome}</span>
+                    <span className="text-xs text-muted-foreground">({p.disciplinas.join(', ')})</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Alunos da turma */}
+            <div>
+              <Label className="text-base font-semibold">Alunos da Turma ({alunosDaTurmaEdit.length})</Label>
+              <div className="border rounded-md mt-2 max-h-48 overflow-y-auto">
+                {alunosDaTurmaEdit.length === 0 ? (
+                  <p className="p-3 text-sm text-muted-foreground text-center">Nenhum aluno nesta turma.</p>
+                ) : (
+                  alunosDaTurmaEdit.map(a => (
+                    <div key={a.id} className="flex items-center justify-between p-2 border-b last:border-b-0">
+                      <div>
+                        <span className="text-sm font-medium">{a.nome}</span>
+                        <span className="text-xs text-muted-foreground ml-2">Mat: {a.matricula}</span>
+                      </div>
+                      <button
+                        onClick={() => handleRemoverAlunoTurma(a.id)}
+                        className="text-xs bg-destructive text-destructive-foreground px-2 py-1 rounded inline-flex items-center gap-1 hover:opacity-80"
+                      >
+                        <UserMinus className="w-3 h-3" /> Remover
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* Adicionar aluno */}
+            <div>
+              <Label className="text-base font-semibold">Adicionar Aluno à Turma</Label>
+              <div className="relative mt-2">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  placeholder="Buscar aluno por nome ou matrícula..."
+                  value={editAlunosBusca}
+                  onChange={e => setEditAlunosBusca(e.target.value)}
+                  className="pl-9"
+                />
+              </div>
+              {editAlunosBusca && (
+                <div className="border rounded-md mt-1 max-h-36 overflow-y-auto">
+                  {alunosDisponiveisEdit.length === 0 ? (
+                    <p className="p-3 text-sm text-muted-foreground text-center">Nenhum aluno encontrado.</p>
+                  ) : (
+                    alunosDisponiveisEdit.slice(0, 10).map(a => (
+                      <div key={a.id} className="flex items-center justify-between p-2 border-b last:border-b-0 hover:bg-secondary/50">
+                        <div>
+                          <span className="text-sm font-medium">{a.nome}</span>
+                          <span className="text-xs text-muted-foreground ml-2">{a.turmaName} — Mat: {a.matricula}</span>
+                        </div>
+                        <button
+                          onClick={() => handleAdicionarAlunoTurma(a.id)}
+                          className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded inline-flex items-center gap-1 hover:opacity-80"
+                        >
+                          <UserPlus className="w-3 h-3" /> Adicionar
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
             </div>
           </div>
           <DialogFooter>
