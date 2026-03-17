@@ -171,7 +171,7 @@ export default function EscolaDetalheSecretaria() {
 
           <div className="space-y-6">
             {seriesEscola.map(serie => {
-              const turmasDaSerie = getTurmasBySerie(serie.id);
+              const turmasDaSerie = getTurmasLocalBySerie(serie.id);
               return (
                 <Card key={serie.id}>
                   <CardContent className="pt-5">
@@ -186,8 +186,20 @@ export default function EscolaDetalheSecretaria() {
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         {turmasDaSerie.map(turma => (
                           <div key={turma.id} className="border rounded-md p-3 bg-muted/30">
-                            <p className="font-medium text-sm text-card-foreground">{turma.nome}</p>
-                            <p className="text-xs text-muted-foreground">{turma.sala}</p>
+                            <div className="flex items-start justify-between">
+                              <div>
+                                <p className="font-medium text-sm text-card-foreground">{turma.nome}</p>
+                                <p className="text-xs text-muted-foreground">{turma.sala}</p>
+                              </div>
+                              <div className="flex gap-1">
+                                <button onClick={() => openEditTurma(turma)} className="text-muted-foreground hover:text-primary transition-colors">
+                                  <Pencil className="w-3.5 h-3.5" />
+                                </button>
+                                <button onClick={() => { setDeleteTurmaId(turma.id); setDeleteConfirmOpen(true); }} className="text-muted-foreground hover:text-destructive transition-colors">
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            </div>
                             <p className={`text-sm font-bold mt-1 ${turma.frequenciaMedia < 75 ? 'text-destructive' : 'text-primary'}`}>
                               {turma.frequenciaMedia}%
                             </p>
