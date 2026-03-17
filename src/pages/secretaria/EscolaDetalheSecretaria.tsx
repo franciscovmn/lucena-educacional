@@ -389,7 +389,9 @@ export default function EscolaDetalheSecretaria() {
         open={deleteConfirmOpen}
         onOpenChange={setDeleteConfirmOpen}
         title="Excluir Turma"
-        description={`Tem certeza que deseja excluir a turma "${turmasLocais.find(t => t.id === deleteTurmaId)?.nome}"? Esta ação não pode ser desfeita.`}
+        description={alunosNaTurmaDelete > 0
+          ? `A turma "${turmasLocais.find(t => t.id === deleteTurmaId)?.nome}" possui ${alunosNaTurmaDelete} aluno(s) vinculado(s). Remova os alunos antes de excluir.`
+          : `Tem certeza que deseja excluir a turma "${turmasLocais.find(t => t.id === deleteTurmaId)?.nome}"? Esta ação não pode ser desfeita.`}
         onConfirm={handleDeleteTurma}
         confirmLabel="Excluir"
         variant="destructive"

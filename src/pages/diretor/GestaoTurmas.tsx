@@ -244,7 +244,9 @@ export default function GestaoTurmas() {
         open={deleteConfirmOpen}
         onOpenChange={setDeleteConfirmOpen}
         title="Excluir Turma"
-        description={`Tem certeza que deseja excluir a turma "${lista.find(t => t.id === deleteId)?.nome}"? Esta ação não pode ser desfeita.`}
+        description={alunosNaTurmaDelete > 0
+          ? `A turma "${lista.find(t => t.id === deleteId)?.nome}" possui ${alunosNaTurmaDelete} aluno(s) vinculado(s). Remova os alunos antes de excluir.`
+          : `Tem certeza que deseja excluir a turma "${lista.find(t => t.id === deleteId)?.nome}"? Esta ação não pode ser desfeita.`}
         onConfirm={handleDelete}
         confirmLabel="Excluir"
         variant="destructive"
