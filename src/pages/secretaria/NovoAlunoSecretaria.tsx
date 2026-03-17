@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { turmas, series, responsaveis } from '@/data/mockData';
+import { turmas, series, escolas, responsaveis } from '@/data/mockData';
 import { toast } from 'sonner';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
@@ -9,13 +9,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ArrowLeft, UserPlus, Fingerprint, CheckCircle2, Loader2, Search, X, Plus } from 'lucide-react';
 
-export default function NovoAluno() {
+export default function NovoAlunoSecretaria() {
   const navigate = useNavigate();
 
-  // Aba Dados do Aluno
+  // Dados do Aluno
   const [nome, setNome] = useState('');
   const [matricula, setMatricula] = useState('');
   const [dataNascimento, setDataNascimento] = useState('');
+  const [escolaSel, setEscolaSel] = useState('');
   const [serieSel, setSerieSel] = useState('');
   const [turmaSel, setTurmaSel] = useState('');
 
@@ -23,12 +24,12 @@ export default function NovoAluno() {
   const [buscaResp, setBuscaResp] = useState('');
   const [responsaveisVinculados, setResponsaveisVinculados] = useState<string[]>([]);
 
-  // Aba Biometria
+  // Biometria
   const [bioCapturando, setBioCapturando] = useState(false);
   const [bioRegistrada, setBioRegistrada] = useState(false);
 
-  const seriesEscola = series.filter(s => s.escolaId === '1');
-  const turmasFiltradas = turmas.filter(t => t.serieId === serieSel);
+  const seriesFiltradas = useMemo(() => escolaSel ? series.filter(s => s.escolaId === escolaSel) : [], [escolaSel]);
+  const turmasFiltradas = useMemo(() => serieSel ? turmas.filter(t => t.serieId === serieSel) : [], [serieSel]);
 
   const resultadosBusca = useMemo(() => {
     if (!buscaResp.trim()) return [];
@@ -59,14 +60,18 @@ export default function NovoAluno() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (responsaveisVinculados.length === 0) {
+      toast.error('Vincule ao menos um responsável ao aluno.');
+      return;
+    }
     toast.success('Aluno cadastrado com sucesso!');
-    navigate('/diretor/alunos');
+    navigate('/secretaria/alunos');
   };
 
   return (
     <div>
       <button
-        onClick={() => navigate('/diretor/alunos')}
+        onClick={() => navigate('/secretaria/alunos')}
         className="inline-flex items-center gap-1 text-sm text-primary hover:underline mb-4"
       >
         <ArrowLeft className="w-4 h-4" /> Voltar para Gestão de Alunos
@@ -92,50 +97,44 @@ export default function NovoAluno() {
                 <div className="space-y-4">
                   <div>
                     <Label htmlFor="nome">Nome Completo</Label>
-                    <Input
-                      id="nome"
-                      value={nome}
-                      onChange={e => setNome(e.target.value)}
-                      placeholder="Nome completo do aluno"
-                      required
-                      className="mt-1"
-                    />
+                    <Input id="nome" value={nome} onChange={e => setNome(e.target.value)} placeholder="Nome completo do aluno" required className="mt-1" />
                   </div>
                   <div>
                     <Label htmlFor="matricula">Matrícula</Label>
-                    <Input
-                      id="matricula"
-                      value={matricula}
-                      onChange={e => setMatricula(e.target.value)}
-                      placeholder="Ex: 2026022"
-                      required
-                      className="mt-1"
-                    />
+                    <Input id="matricula" value={matricula} onChange={e => setMatricula(e.target.value)} placeholder="Ex: 2026022" required className="mt-1" />
                   </div>
                   <div>
                     <Label htmlFor="dataNasc">Data de Nascimento</Label>
-                    <Input
-                      id="dataNasc"
-                      type="date"
-                      value={dataNascimento}
-                      onChange={e => setDataNascimento(e.target.value)}
-                      required
-                      className="mt-1"
-                    />
+                    <Input id="dataNasc" type="date" value={dataNascimento} onChange={e => setDataNascimento(e.target.value)} required className="mt-1" />
                   </div>
                   <div>
-                    <Label htmlFor="serie">Série</Label>
+                    <Label htmlFor="escola">Escola</Label>
                     <select
-                      id="serie"
-                      value={serieSel}
-                      onChange={e => { setSerieSel(e.target.value); setTurmaSel(''); }}
+                      id="escola"
+                      value={escolaSel}
+                      onChange={e => { setEscolaSel(e.target.value); setSerieSel(''); setTurmaSel(''); }}
                       required
                       className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 mt-1"
                     >
-                      <option value="">Selecione a série...</option>
-                      {seriesEscola.map(s => <option key={s.id} value={s.id}>{s.nome}</option>)}
+                      <option value="">Selecione a escola...</option>
+                      {escolas.map(e => <option key={e.id} value={e.id}>{e.nome}</option>)}
                     </select>
                   </div>
+                  {escolaSel && (
+                    <div>
+                      <Label htmlFor="serie">Série</Label>
+                      <select
+                        id="serie"
+                        value={serieSel}
+                        onChange={e => { setSerieSel(e.target.value); setTurmaSel(''); }}
+                        required
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 mt-1"
+                      >
+                        <option value="">Selecione a série...</option>
+                        {seriesFiltradas.map(s => <option key={s.id} value={s.id}>{s.nome}</option>)}
+                      </select>
+                    </div>
+                  )}
                   {serieSel && (
                     <div>
                       <Label htmlFor="turma">Turma</Label>
@@ -227,39 +226,23 @@ export default function NovoAluno() {
                   <p className="text-sm text-muted-foreground text-center max-w-sm">
                     Capture o padrão facial do aluno utilizando o dispositivo de reconhecimento conectado.
                   </p>
-
                   {bioRegistrada ? (
                     <div className="flex items-center gap-2 bg-primary/10 text-primary px-4 py-3 rounded-lg font-medium">
                       <CheckCircle2 className="w-5 h-5" />
                       Padrão Facial Registrado
                     </div>
                   ) : (
-                    <Button
-                      type="button"
-                      onClick={handleCapturarBiometria}
-                      disabled={bioCapturando}
-                      size="lg"
-                    >
-                      {bioCapturando ? (
-                        <>
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                          Capturando...
-                        </>
-                      ) : (
-                        'Capturar Biometria no Aparelho'
-                      )}
+                    <Button type="button" onClick={handleCapturarBiometria} disabled={bioCapturando} size="lg">
+                      {bioCapturando ? (<><Loader2 className="w-4 h-4 animate-spin" /> Capturando...</>) : 'Capturar Biometria no Aparelho'}
                     </Button>
                   )}
                 </div>
               </TabsContent>
             </Tabs>
 
-            {/* Botões de ação */}
             <div className="flex gap-3 pt-6 mt-6 border-t">
               <Button type="submit">Salvar Aluno</Button>
-              <Button type="button" variant="outline" onClick={() => navigate('/diretor/alunos')}>
-                Cancelar
-              </Button>
+              <Button type="button" variant="outline" onClick={() => navigate('/secretaria/alunos')}>Cancelar</Button>
             </div>
           </CardContent>
         </Card>

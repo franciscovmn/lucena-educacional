@@ -79,8 +79,8 @@ export default function GestaoTurmas() {
             )}
 
             <div>
-              <label className="block text-sm font-medium mb-1">Sala</label>
-              <input type="text" value={sala} onChange={e => setSala(e.target.value)} placeholder="Ex: Sala 10" required className="w-full px-3 py-2 border rounded-md bg-background text-sm" />
+              <label className="block text-sm font-medium mb-1">Sala (número)</label>
+              <input type="number" value={sala} onChange={e => setSala(e.target.value)} placeholder="Ex: 10" required min={1} className="w-full px-3 py-2 border rounded-md bg-background text-sm" />
             </div>
 
             <div>

@@ -45,6 +45,7 @@ import GestaoDiretores from "./pages/secretaria/GestaoDiretores";
 import GestaoProfessoresSecretaria from "./pages/secretaria/GestaoProfessoresSecretaria";
 import GestaoResponsaveis from "./pages/secretaria/GestaoResponsaveis";
 import GestaoAlunosSecretaria from "./pages/secretaria/GestaoAlunosSecretaria";
+import NovoAlunoSecretaria from "./pages/secretaria/NovoAlunoSecretaria";
 import JustificativasGlobais from "./pages/secretaria/JustificativasGlobais";
 import DetalheTurmaSecretaria from "./pages/secretaria/DetalheTurmaSecretaria";
 import TurmasSerieSecretaria from "./pages/secretaria/TurmasSerieSecretaria";
@@ -104,6 +105,7 @@ function AppRoutes() {
       <Route path="/secretaria/professores" element={<ProtectedLayout><GestaoProfessoresSecretaria /></ProtectedLayout>} />
       <Route path="/secretaria/responsaveis" element={<ProtectedLayout><GestaoResponsaveis /></ProtectedLayout>} />
       <Route path="/secretaria/alunos" element={<ProtectedLayout><GestaoAlunosSecretaria /></ProtectedLayout>} />
+      <Route path="/secretaria/novo-aluno" element={<ProtectedLayout><NovoAlunoSecretaria /></ProtectedLayout>} />
       <Route path="/secretaria/justificativas" element={<ProtectedLayout><JustificativasGlobais /></ProtectedLayout>} />
 
       <Route path="*" element={<NotFound />} />

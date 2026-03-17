@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { escolas, getSeriesByEscola, getTurmasBySerie } from '@/data/mockData';
+import { escolas, getSeriesByEscola, getTurmasBySerie, series, turmas } from '@/data/mockData';
 import { ArrowLeft, Plus, Clock, GraduationCap } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
@@ -26,13 +26,31 @@ export default function EscolaDetalheSecretaria() {
 
   // Modal Nova Turma
   const [turmaModalOpen, setTurmaModalOpen] = useState(false);
-  const [novaTurmaNome, setNovaTurmaNome] = useState('');
   const [novaTurmaSerie, setNovaTurmaSerie] = useState('');
   const [novaTurmaSala, setNovaTurmaSala] = useState('');
   const [turmaSobrescrever, setTurmaSobrescrever] = useState(false);
   const [turmaHorarioInicio, setTurmaHorarioInicio] = useState('07:00');
   const [turmaTolerancia, setTurmaTolerancia] = useState('15');
   const [turmaLimiteMax, setTurmaLimiteMax] = useState('07:30');
+
+  // Auto-generate turma name
+  const proximaLetraTurma = useMemo(() => {
+    if (!novaTurmaSerie) return '';
+    const turmasSerie = turmas.filter(t => t.serieId === novaTurmaSerie);
+    const letras = turmasSerie.map(t => {
+      const match = t.nome.match(/\s([A-Z])$/);
+      return match ? match[1] : '';
+    }).filter(Boolean).sort();
+    if (letras.length === 0) return 'A';
+    const ultimaLetra = letras[letras.length - 1];
+    return String.fromCharCode(ultimaLetra.charCodeAt(0) + 1);
+  }, [novaTurmaSerie]);
+
+  const nomeTurmaGerado = useMemo(() => {
+    if (!novaTurmaSerie) return '';
+    const serie = series.find(s => s.id === novaTurmaSerie);
+    return serie ? `${serie.nome} ${proximaLetraTurma}` : '';
+  }, [novaTurmaSerie, proximaLetraTurma]);
 
   if (!escola) return <div>Escola não encontrada</div>;
 
@@ -47,9 +65,8 @@ export default function EscolaDetalheSecretaria() {
   };
 
   const handleSalvarTurma = () => {
-    toast.success(`Turma "${novaTurmaNome}" criada com sucesso!`);
+    toast.success(`Turma "${nomeTurmaGerado}" criada com sucesso!`);
     setTurmaModalOpen(false);
-    setNovaTurmaNome('');
     setNovaTurmaSerie('');
     setNovaTurmaSala('');
     setTurmaSobrescrever(false);
@@ -209,13 +226,15 @@ export default function EscolaDetalheSecretaria() {
                 {seriesEscola.map(s => <option key={s.id} value={s.id}>{s.nome}</option>)}
               </select>
             </div>
+            {novaTurmaSerie && (
+              <div>
+                <Label htmlFor="turmaNome">Nome da Turma (gerado)</Label>
+                <Input id="turmaNome" value={nomeTurmaGerado} readOnly className="mt-1 bg-muted" />
+              </div>
+            )}
             <div>
-              <Label htmlFor="turmaNome">Nome da Turma</Label>
-              <Input id="turmaNome" value={novaTurmaNome} onChange={e => setNovaTurmaNome(e.target.value)} placeholder="Ex: 6º Ano B" className="mt-1" />
-            </div>
-            <div>
-              <Label htmlFor="turmaSala">Sala</Label>
-              <Input id="turmaSala" value={novaTurmaSala} onChange={e => setNovaTurmaSala(e.target.value)} placeholder="Ex: Sala 10" className="mt-1" />
+              <Label htmlFor="turmaSala">Sala (número)</Label>
+              <Input id="turmaSala" type="number" value={novaTurmaSala} onChange={e => setNovaTurmaSala(e.target.value)} placeholder="Ex: 10" min={1} className="mt-1" />
             </div>
 
             {/* Regras de horário herdadas */}

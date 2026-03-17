@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { alunos, escolas, series, turmas } from '@/data/mockData';
 import { toast } from 'sonner';
 
@@ -8,6 +9,7 @@ const cadastrosPendentes = [
 ];
 
 export default function GestaoAlunosSecretaria() {
+  const navigate = useNavigate();
   const [filtroNome, setFiltroNome] = useState('');
   const [filtroEscola, setFiltroEscola] = useState('');
   const [filtroSerie, setFiltroSerie] = useState('');
@@ -34,7 +36,7 @@ export default function GestaoAlunosSecretaria() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-foreground">Gestão de Alunos — Global</h1>
-        <button onClick={() => toast.info('Formulário de novo aluno em desenvolvimento')} className="bg-primary text-primary-foreground px-4 py-2 rounded-md text-sm font-medium hover:opacity-90">+ Novo Aluno</button>
+        <button onClick={() => navigate('/secretaria/novo-aluno')} className="bg-primary text-primary-foreground px-4 py-2 rounded-md text-sm font-medium hover:opacity-90">+ Novo Aluno</button>
       </div>
 
       {pendentes.length > 0 && (
