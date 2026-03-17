@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getAlunosByEscola } from '@/data/mockData';
 
 export default function GestaoAlunosDiretor() {
+  const navigate = useNavigate();
   const alunosEscola = getAlunosByEscola('1');
   const [filtroNome, setFiltroNome] = useState('');
   const [filtroSerie, setFiltroSerie] = useState('');
