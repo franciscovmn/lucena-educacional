@@ -4,7 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { notificacoes, nomesPerfil, PerfilUsuario } from '@/data/mockData';
 import {
   Home, Users, FileText, Settings, BookOpen, GraduationCap,
-  School, UserCheck, Bell, LogOut, Menu, X, ChevronDown, User
+  School, UserCheck, Bell, LogOut, Menu, X, ChevronDown, User, BarChart3
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
