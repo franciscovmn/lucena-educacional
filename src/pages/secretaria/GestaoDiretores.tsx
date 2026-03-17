@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { diretores as diretoresData, escolas } from '@/data/mockData';
 import { toast } from 'sonner';
-import { formatCpf } from '@/lib/masks';
+import { formatCpf, validateCpf } from '@/lib/masks';
 import { X } from 'lucide-react';
 
 export default function GestaoDiretores() {
@@ -33,6 +33,7 @@ export default function GestaoDiretores() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateCpf(cpf)) { toast.error('CPF inválido. Verifique os dígitos.'); return; }
     if (escolasSel.length === 0) { toast.error('Selecione ao menos uma escola.'); return; }
 
     if (editId) {

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { professores as professoresData, escolas } from '@/data/mockData';
 import { toast } from 'sonner';
-import { formatCpf } from '@/lib/masks';
+import { formatCpf, validateCpf } from '@/lib/masks';
 import { X } from 'lucide-react';
 
 export default function GestaoProfessoresSecretaria() {
@@ -38,6 +38,7 @@ export default function GestaoProfessoresSecretaria() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateCpf(cpf)) { toast.error('CPF inválido. Verifique os dígitos.'); return; }
     if (escolasSel.length === 0) { toast.error('Selecione ao menos uma escola.'); return; }
 
     const discs = disciplinas.split(',').map(d => d.trim()).filter(Boolean);
