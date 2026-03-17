@@ -22,19 +22,9 @@ export default function DetalheAlunoDiretor() {
         <ArrowLeft className="w-4 h-4" /> Voltar
       </Link>
 
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          {editando ? (
-            <input value={nome} onChange={e => setNome(e.target.value)} className="text-2xl font-bold border-b border-primary bg-transparent focus:outline-none" />
-          ) : (
-            <h1 className="text-2xl font-bold text-foreground">{aluno.nome}</h1>
-          )}
-          <p className="text-sm text-muted-foreground">{aluno.escolaNome} — {aluno.turmaName} | Matrícula: {aluno.matricula}</p>
-        </div>
-        <button onClick={() => { if (editando) toast.success('Dados salvos!'); setEditando(!editando); }}
-          className="flex items-center gap-1 text-sm bg-secondary text-secondary-foreground px-3 py-1.5 rounded-md hover:opacity-80">
-          {editando ? <><Save className="w-4 h-4" /> Salvar</> : 'Editar'}
-        </button>
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-foreground">{aluno.nome}</h1>
+        <p className="text-sm text-muted-foreground">{aluno.escolaNome} — {aluno.turmaName} | Matrícula: {aluno.matricula}</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
