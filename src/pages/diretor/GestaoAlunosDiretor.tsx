@@ -1,12 +1,16 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getAlunosByEscola } from '@/data/mockData';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+
+const POR_PAGINA = 10;
 
 export default function GestaoAlunosDiretor() {
   const navigate = useNavigate();
   const alunosEscola = getAlunosByEscola('1');
   const [filtroNome, setFiltroNome] = useState('');
   const [filtroSerie, setFiltroSerie] = useState('');
+  const [pagina, setPagina] = useState(1);
 
   const seriesUnicas = [...new Set(alunosEscola.map(a => a.serieName))];
   const filtered = alunosEscola.filter(a => {
@@ -14,6 +18,14 @@ export default function GestaoAlunosDiretor() {
     if (filtroSerie && a.serieName !== filtroSerie) return false;
     return true;
   });
+
+  const totalPaginas = Math.max(1, Math.ceil(filtered.length / POR_PAGINA));
+  const paginaAtual = Math.min(pagina, totalPaginas);
+  const paginados = filtered.slice((paginaAtual - 1) * POR_PAGINA, paginaAtual * POR_PAGINA);
+
+  // Reset page on filter change
+  const handleFiltroNome = (v: string) => { setFiltroNome(v); setPagina(1); };
+  const handleFiltroSerie = (v: string) => { setFiltroSerie(v); setPagina(1); };
 
   return (
     <div>
@@ -25,9 +37,9 @@ export default function GestaoAlunosDiretor() {
       </div>
 
       <div className="flex flex-wrap gap-3 mb-4">
-        <input type="text" placeholder="Buscar por nome..." value={filtroNome} onChange={e => setFiltroNome(e.target.value)}
+        <input type="text" placeholder="Buscar por nome..." value={filtroNome} onChange={e => handleFiltroNome(e.target.value)}
           className="px-3 py-2 border rounded-md bg-background text-sm w-64" />
-        <select value={filtroSerie} onChange={e => setFiltroSerie(e.target.value)} className="px-3 py-2 border rounded-md bg-background text-sm">
+        <select value={filtroSerie} onChange={e => handleFiltroSerie(e.target.value)} className="px-3 py-2 border rounded-md bg-background text-sm">
           <option value="">Todas as séries</option>
           {seriesUnicas.map(s => <option key={s} value={s}>{s}</option>)}
         </select>
@@ -44,10 +56,9 @@ export default function GestaoAlunosDiretor() {
             <th className="text-left p-3 text-sm font-medium">Freq.</th>
           </tr></thead>
           <tbody>
-            {filtered.map(a => (
+            {paginados.map(a => (
               <tr key={a.id} className="border-b hover:bg-secondary/30 cursor-pointer transition-colors" onClick={() => navigate(`/diretor/aluno/${a.id}`)}>
-                <td className="p-3 text-sm font-medium text-primary hover:underline">{a.nome}
-                </td>
+                <td className="p-3 text-sm font-medium text-primary hover:underline">{a.nome}</td>
                 <td className="p-3 text-sm">{a.cpf}</td>
                 <td className="p-3 text-sm">{a.matricula}</td>
                 <td className="p-3 text-sm">{a.serieName}</td>
@@ -59,6 +70,28 @@ export default function GestaoAlunosDiretor() {
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Paginação */}
+      <div className="flex items-center justify-between mt-4 text-sm text-muted-foreground">
+        <span>{filtered.length} aluno(s) encontrado(s)</span>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setPagina(p => Math.max(1, p - 1))}
+            disabled={paginaAtual <= 1}
+            className="p-1.5 rounded-md border bg-background disabled:opacity-40 hover:bg-secondary transition-colors"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </button>
+          <span className="font-medium text-foreground">{paginaAtual} / {totalPaginas}</span>
+          <button
+            onClick={() => setPagina(p => Math.min(totalPaginas, p + 1))}
+            disabled={paginaAtual >= totalPaginas}
+            className="p-1.5 rounded-md border bg-background disabled:opacity-40 hover:bg-secondary transition-colors"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </button>
+        </div>
       </div>
     </div>
   );
