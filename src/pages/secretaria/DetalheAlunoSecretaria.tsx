@@ -24,16 +24,14 @@ export default function DetalheAlunoSecretaria() {
   const [vincularModalOpen, setVincularModalOpen] = useState(false);
   const [buscaResp, setBuscaResp] = useState('');
 
-  if (!aluno) return <div>Aluno não encontrado</div>;
-
-  const freq = gerarFrequencia(aluno.id, aluno.frequenciaEntrada, aluno.frequenciaTurma);
-  const respsVinculados = responsaveis.filter(r => responsaveisIds.includes(r.id));
-  const justificativasAluno = justificativas.filter(j => j.alunoId === aluno.id);
+  const freq = useMemo(() => aluno ? gerarFrequencia(aluno.id, aluno.frequenciaEntrada, aluno.frequenciaTurma) : { entrada: [], turma: [] }, [aluno]);
+  const respsVinculados = useMemo(() => responsaveis.filter(r => responsaveisIds.includes(r.id)), [responsaveisIds]);
+  const justificativasAluno = useMemo(() => aluno ? justificativas.filter(j => j.alunoId === aluno.id) : [], [aluno]);
 
   const turmaAtual = turmas.find(t => t.id === turmaId);
-  const escolaAtual = escolas.find(e => e.id === aluno.escolaId);
-  const seriesEscola = series.filter(s => s.escolaId === aluno.escolaId);
-  const turmasDisponiveis = turmas.filter(t => t.escolaId === aluno.escolaId);
+  const seriesEscola = useMemo(() => aluno ? series.filter(s => s.escolaId === aluno.escolaId) : [], [aluno]);
+  const turmasDisponiveis = useMemo(() => aluno ? turmas.filter(t => t.escolaId === aluno.escolaId) : [], [aluno]);
+  const escolaAtual = aluno ? escolas.find(e => e.id === aluno.escolaId) : null;
 
   // Responsáveis não vinculados para busca
   const respsDisponiveis = useMemo(() => {
@@ -42,6 +40,8 @@ export default function DetalheAlunoSecretaria() {
       (buscaResp === '' || r.nome.toLowerCase().includes(buscaResp.toLowerCase()) || r.cpf.includes(buscaResp))
     );
   }, [responsaveisIds, buscaResp]);
+
+  if (!aluno) return <div>Aluno não encontrado</div>;
 
   const handleSalvarTurma = () => {
     toast.success('Turma do aluno atualizada com sucesso!');
