@@ -45,6 +45,7 @@ const menusPorPerfil: Record<PerfilUsuario, MenuItem[]> = {
     { label: 'Responsáveis', path: '/secretaria/responsaveis', icon: <Users className="w-5 h-5" /> },
     { label: 'Alunos', path: '/secretaria/alunos', icon: <Users className="w-5 h-5" /> },
     { label: 'Justificativas', path: '/secretaria/justificativas', icon: <FileText className="w-5 h-5" /> },
+    { label: 'Relatórios', path: '/secretaria/relatorios', icon: <BarChart3 className="w-5 h-5" /> },
   ],
 };
 
