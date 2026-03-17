@@ -226,13 +226,15 @@ export default function EscolaDetalheSecretaria() {
                 {seriesEscola.map(s => <option key={s.id} value={s.id}>{s.nome}</option>)}
               </select>
             </div>
+            {novaTurmaSerie && (
+              <div>
+                <Label htmlFor="turmaNome">Nome da Turma (gerado)</Label>
+                <Input id="turmaNome" value={nomeTurmaGerado} readOnly className="mt-1 bg-muted" />
+              </div>
+            )}
             <div>
-              <Label htmlFor="turmaNome">Nome da Turma</Label>
-              <Input id="turmaNome" value={novaTurmaNome} onChange={e => setNovaTurmaNome(e.target.value)} placeholder="Ex: 6º Ano B" className="mt-1" />
-            </div>
-            <div>
-              <Label htmlFor="turmaSala">Sala</Label>
-              <Input id="turmaSala" value={novaTurmaSala} onChange={e => setNovaTurmaSala(e.target.value)} placeholder="Ex: Sala 10" className="mt-1" />
+              <Label htmlFor="turmaSala">Sala (número)</Label>
+              <Input id="turmaSala" type="number" value={novaTurmaSala} onChange={e => setNovaTurmaSala(e.target.value)} placeholder="Ex: 10" min={1} className="mt-1" />
             </div>
 
             {/* Regras de horário herdadas */}
