@@ -83,7 +83,7 @@ export default function NovoAluno() {
             <Tabs defaultValue="dados" className="w-full">
               <TabsList className="grid w-full grid-cols-3 mb-6">
                 <TabsTrigger value="dados">Dados do Aluno</TabsTrigger>
-                <TabsTrigger value="responsavel">Responsável</TabsTrigger>
+                <TabsTrigger value="responsaveis">Responsáveis</TabsTrigger>
                 <TabsTrigger value="biometria">Biometria</TabsTrigger>
               </TabsList>
 
