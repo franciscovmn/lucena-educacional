@@ -79,12 +79,48 @@ export default function EscolaDetalheSecretaria() {
   };
 
   const handleSalvarTurma = () => {
+    const nova: Turma = {
+      id: `t-novo-${Date.now()}`,
+      nome: nomeTurmaGerado,
+      serieId: novaTurmaSerie,
+      escolaId: escolaId || '1',
+      sala: `Sala ${novaTurmaSala}`,
+      professorIds: [],
+      frequenciaMedia: 0,
+    };
+    setTurmasLocais(prev => [...prev, nova]);
     toast.success(`Turma "${nomeTurmaGerado}" criada com sucesso!`);
     setTurmaModalOpen(false);
     setNovaTurmaSerie('');
     setNovaTurmaSala('');
     setTurmaSobrescrever(false);
   };
+
+  const openEditTurma = (turma: Turma) => {
+    setEditTurmaId(turma.id);
+    setEditTurmaSala(turma.sala.replace(/\D/g, '') || turma.sala);
+    setEditTurmaModalOpen(true);
+  };
+
+  const handleSalvarEditTurma = () => {
+    setTurmasLocais(prev => prev.map(t =>
+      t.id === editTurmaId ? { ...t, sala: `Sala ${editTurmaSala}` } : t
+    ));
+    toast.success('Turma atualizada com sucesso!');
+    setEditTurmaModalOpen(false);
+    setEditTurmaId(null);
+  };
+
+  const handleDeleteTurma = () => {
+    if (!deleteTurmaId) return;
+    const turma = turmasLocais.find(t => t.id === deleteTurmaId);
+    setTurmasLocais(prev => prev.filter(t => t.id !== deleteTurmaId));
+    toast.success(`Turma "${turma?.nome}" excluída.`);
+    setDeleteConfirmOpen(false);
+    setDeleteTurmaId(null);
+  };
+
+  const editingTurma = turmasLocais.find(t => t.id === editTurmaId);
 
   // Regras padrão da série selecionada (simulação)
   const regrasHerdadas = { horario: '07:00', tolerancia: '15', limite: '07:30' };
