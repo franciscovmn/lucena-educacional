@@ -24,6 +24,8 @@ export default function NovoAlunoSecretaria() {
   // Responsáveis vinculados
   const [buscaResp, setBuscaResp] = useState('');
   const [responsaveisVinculados, setResponsaveisVinculados] = useState<string[]>([]);
+  const [novosResps, setNovosResps] = useState<{ id: string; nome: string; cpf: string; whatsapp: string; parentesco: string }[]>([]);
+  const [modalNovoResp, setModalNovoResp] = useState(false);
 
   // Biometria
   const [bioCapturando, setBioCapturando] = useState(false);

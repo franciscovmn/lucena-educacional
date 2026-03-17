@@ -23,6 +23,8 @@ export default function NovoAluno() {
   // Responsáveis vinculados
   const [buscaResp, setBuscaResp] = useState('');
   const [responsaveisVinculados, setResponsaveisVinculados] = useState<string[]>([]);
+  const [novosResps, setNovosResps] = useState<{ id: string; nome: string; cpf: string; whatsapp: string; parentesco: string }[]>([]);
+  const [modalNovoResp, setModalNovoResp] = useState(false);
 
   // Aba Biometria
   const [bioCapturando, setBioCapturando] = useState(false);
