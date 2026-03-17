@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { turmas, series, responsaveis } from '@/data/mockData';
 import { toast } from 'sonner';
